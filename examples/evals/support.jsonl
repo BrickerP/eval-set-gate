@@ -1,0 +1,2 @@
+{"input":"where is order 42","must_contain":"42"}
+{"input":"refund?","must_not_contain":"guarantee"}

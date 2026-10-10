@@ -1,0 +1,25 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: { python: ["3.9", "3.12"] }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "${{ matrix.python }}" }
+      - run: python -m unittest discover -s tests -v
+  self-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - run: python3 src/eval_set_gate.py verify --root examples --evals "evals/**"
+      - name: Run action against itself (no prompt changes -> pass)
+        uses: ./
+        with:
+          base: HEAD~1
+          watch: "examples/prompts/**"
+          evals: "examples/evals/**"
+          lockfile: "examples/evals.lock.json"

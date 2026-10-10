@@ -1,0 +1,33 @@
+name: "Eval Set Gate"
+description: "Fail PRs that change prompts or model config without bumping the versioned eval set."
+author: "BrickerP"
+branding:
+  icon: "shield"
+  color: "purple"
+inputs:
+  watch:
+    description: "Comma/newline-separated globs for prompt & model config files"
+    required: false
+    default: "prompts/**,**/*.prompt,**/*.prompt.md,**/model*.yaml,**/model*.yml,**/model*.json,**/llm*.yaml"
+  evals:
+    description: "Globs for eval set files"
+    required: false
+    default: "evals/**"
+  lockfile:
+    description: "Lockfile holding eval set version + hash"
+    required: false
+    default: "evals.lock.json"
+  base:
+    description: "Base ref to diff against (defaults to the PR base)"
+    required: false
+    default: ""
+runs:
+  using: "composite"
+  steps:
+    - shell: bash
+      env:
+        INPUT_WATCH: ${{ inputs.watch }}
+        INPUT_EVALS: ${{ inputs.evals }}
+        INPUT_LOCKFILE: ${{ inputs.lockfile }}
+        BASE: ${{ inputs.base || format('origin/{0}', github.base_ref) }}
+      run: python3 "${{ github.action_path }}/src/eval_set_gate.py" check --base "$BASE"
