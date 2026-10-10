@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
-      - run: python3 src/eval_set_gate.py verify --root examples --evals "evals/**"
+      - run: python3 src/eval_set_gate.py verify --evals "examples/evals/**" --lockfile examples/evals.lock.json
       - name: Run action against itself (no prompt changes -> pass)
         uses: ./
         with:
