@@ -1,0 +1,12 @@
+# Keep GitHub Actions pins current (actions/checkout, actions/setup-python, etc.).
+# Covers workflow files under .github/workflows and composite actions in this repo.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns:
+          - "*"
